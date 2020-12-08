@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,13 +30,16 @@ public class RabbitMQConfig {
         return new Queue(queueName, false);
     }
 
+    @Autowired
+    private RabbitMQListner rabbitMQListner;
+
     //create MessageListenerContainer using default connection factory
     @Bean
     MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory ) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
         simpleMessageListenerContainer.setQueues(queue());
-        simpleMessageListenerContainer.setMessageListener(new RabbitMQListner());
+        simpleMessageListenerContainer.setMessageListener(rabbitMQListner);
         return simpleMessageListenerContainer;
 
     }

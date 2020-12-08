@@ -1,7 +1,13 @@
 package com.episen.workerconverter.services;
 
+import com.episen.workerconverter.model.Image;
+import com.episen.workerconverter.model.ImageProperties;
+import com.episen.workerconverter.repository.ImagePropertiesRepository;
+import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -10,24 +16,33 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import com.google.gson.Gson;
 
+@Slf4j
 @Service
 public class RabbitMQListner implements MessageListener {
-    private Path source = Paths.get("./imgs/png/java-duke.png");
-    private Path target = Paths.get("./imgs/jpg/java-duke.jpg");
+    final GsonBuilder builder = new GsonBuilder();
+    final Gson gson = builder.create();
 
+    @Autowired
+    private ImagePropertiesRepository repo ;
+
+    @Autowired
+    private FileService fileService;
 
     public void onMessage(Message message) {
-        System.out.println("Consuming Message - " + new String(message.getBody()));
-        convertPNGToJPG();
+
+        String msg = new String(message.getBody());
+        Image img = new Gson().fromJson(msg, Image.class);
+        System.out.println("Consuming Message - " + img);
+        convertPNGToJPG(img.getId());
     }
 
-    public boolean convertPNGToJPG() {
-
-
-        BufferedImage originalImage = null;
+    public boolean convertPNGToJPG(String id) {
+        ImageProperties properties = repo.findById(id).get();
+        BufferedImage originalImage = fileService.findImageById(id);
+        Path target = Paths.get(".././imgs/jpg/"+id+".jpg");
         try {
-            originalImage = ImageIO.read(source.toFile());
 
             // jpg needs BufferedImage.TYPE_INT_RGB
             // png needs BufferedImage.TYPE_INT_ARGB
@@ -38,16 +53,20 @@ public class RabbitMQListner implements MessageListener {
                     originalImage.getHeight(),
                     BufferedImage.TYPE_INT_RGB);
 
-            // draw a white background and puts the originalImage on it.
-            newBufferedImage.createGraphics()
-                    .drawImage(originalImage,
-                            0,
-                            0,
-                            Color.WHITE,
-                            null);
+            if(properties.isCanalAlpha()){
+                // draw a white background and puts the originalImage on it.
+                newBufferedImage.createGraphics()
+                        .drawImage(originalImage,
+                                0,
+                                0,
+                                Color.WHITE,
+                                null);
+            }
+
 
             // save an image
             ImageIO.write(newBufferedImage, "jpg", target.toFile());
+            log.info("Image : "+id+" converted");
             return true;
         } catch (IOException e) {
             e.printStackTrace();

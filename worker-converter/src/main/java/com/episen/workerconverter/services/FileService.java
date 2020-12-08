@@ -1,7 +1,7 @@
-package com.episen.frontconverter.services;
+package com.episen.workerconverter.services;
 
-import com.episen.frontconverter.model.ImageProperties;
-import com.episen.frontconverter.repository.ImagePropertiesRepository;
+import com.episen.workerconverter.model.ImageProperties;
+import com.episen.workerconverter.repository.ImagePropertiesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -28,26 +28,21 @@ public class FileService {
         this.imagePropertiesRepository = imagePropertiesRepository;
     }
 
-    public boolean findById(String id){
+    public BufferedImage findImageById(String id){
+        BufferedImage newBufferedImage = null;
         for(File f : files){
             if(f.getName().startsWith(id)) {
                 try {
-                    BufferedImage newBufferedImage = ImageIO.read(f);
-                    ImageProperties details = new ImageProperties();
-                    details.setId(id);
-                    details.setCanalAlpha(newBufferedImage.getColorModel().hasAlpha());
-                    details.setWidth(newBufferedImage.getWidth());
-                    details.setHeight(newBufferedImage.getHeight());
+                    newBufferedImage = ImageIO.read(f);
 
-                    imagePropertiesRepository.save(details);
-                    return true;
+                    return newBufferedImage;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        return false;
+        return newBufferedImage;
     }
 
 

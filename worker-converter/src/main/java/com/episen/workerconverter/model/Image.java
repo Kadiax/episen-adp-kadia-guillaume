@@ -1,9 +1,8 @@
-package com.episen.frontconverter.model;
+package com.episen.workerconverter.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
@@ -12,9 +11,4 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Image implements Serializable {
     private String id;
-/*
-    @Override
-    public String toString(){
-        return id;
-    }*/
 }
