@@ -21,7 +21,7 @@ public class ImageController {
     public ResponseEntity<Image> convert(@RequestBody Image image){
         log.info(image.toString());
         rabbitMQSender.send(image);
-        log.info("Message sent to the RabbitMQ JavaInUse Successfully");
+        log.info("Message sent to the RabbitMQ Successfully");
         return ResponseEntity.created(URI.create(String.valueOf(image.getId()))).body(image);
     }
 }
