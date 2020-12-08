@@ -10,10 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageProperties {
-    private Image image;
+public class ImageProperties extends Image {
     private boolean canalAlpha;
-    private String maxColors;
-    private boolean entrelacement;
+    private int width;
+    private int height;
 
 }

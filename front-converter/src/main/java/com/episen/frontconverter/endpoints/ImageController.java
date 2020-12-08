@@ -1,6 +1,7 @@
 package com.episen.frontconverter.endpoints;
 
 import com.episen.frontconverter.model.Image;
+import com.episen.frontconverter.services.FileService;
 import com.episen.frontconverter.services.RabbitMQSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,17 @@ public class ImageController {
     @Autowired
     RabbitMQSender rabbitMQSender;
 
+    @Autowired
+    FileService fileservice;
+
     @PostMapping("/convert")
-    public ResponseEntity<Image> convert(@RequestBody Image image){
+    public String convert(@RequestBody Image image){
         log.info(image.toString());
-        rabbitMQSender.send(image);
-        log.info("Message sent to the RabbitMQ Successfully");
-        return ResponseEntity.created(URI.create(String.valueOf(image.getId()))).body(image);
+        if(fileservice.findById(image.getId())) {
+            rabbitMQSender.send(image);
+            return "Message sent to the RabbitMQ Successfully";
+        }
+        return "ID not found. Please try again";
+
     }
 }

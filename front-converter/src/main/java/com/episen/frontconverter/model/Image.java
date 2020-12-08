@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.io.Serializable;
 
 @Data
-@Document
 @AllArgsConstructor
 @NoArgsConstructor
 public class Image implements Serializable {
