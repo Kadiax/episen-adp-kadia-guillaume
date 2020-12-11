@@ -2,7 +2,9 @@ package com.episen.workerconverter.services;
 
 import com.episen.workerconverter.model.Image;
 import com.episen.workerconverter.model.ImageProperties;
+import com.episen.workerconverter.model.ReportingImage;
 import com.episen.workerconverter.repository.ImagePropertiesRepository;
+import com.episen.workerconverter.repository.ReportingImageRepository;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -25,7 +27,10 @@ public class RabbitMQListner implements MessageListener {
     final Gson gson = builder.create();
 
     @Autowired
-    private ImagePropertiesRepository repo ;
+    private ImagePropertiesRepository imagePropertiesRepository;
+
+    @Autowired
+    private ReportingImageRepository reportingImageRepository;
 
     @Autowired
     private FileService fileService;
@@ -39,7 +44,8 @@ public class RabbitMQListner implements MessageListener {
     }
 
     public boolean convertPNGToJPG(String id) {
-        ImageProperties properties = repo.findById(id).get();
+        long t1 = System.currentTimeMillis();//conversion begin
+        ImageProperties properties = imagePropertiesRepository.findById(id).get();
         BufferedImage originalImage = fileService.findImageById(id);
         Path target = Paths.get(".././imgs/jpg/"+id+".jpg");
         try {
@@ -67,11 +73,31 @@ public class RabbitMQListner implements MessageListener {
             // save an image
             ImageIO.write(newBufferedImage, "jpg", target.toFile());
             log.info("Image : "+id+" converted");
+            long t2 = System.currentTimeMillis();
+            long t3 = t2 - t1;
+
+            //save image properties
+            ReportingImage reportingImage = new ReportingImage();
+            reportingImage.setIdImageProperties(id);
+            reportingImage.setCanalAlpha(newBufferedImage.getColorModel().hasAlpha());
+            reportingImage.setWidth(newBufferedImage.getWidth());
+            reportingImage.setHeight(newBufferedImage.getHeight());
+            reportingImage.setPathFileConverted(".././"+id+".jpg");
+            reportingImage.setPixelSize(newBufferedImage.getColorModel().getPixelSize());
+            reportingImage.setConvertedTime(arround(t3 * 0.001, 2));
+            reportingImageRepository.save(reportingImage);
+            log.info("Image converted properties saved "+reportingImage.toString());
             return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    public double arround(double number,int nbAfterComma)
+    {
+        double power = Math.pow(10.0, nbAfterComma);
+        return Math.round(number*power)/power;
     }
 }

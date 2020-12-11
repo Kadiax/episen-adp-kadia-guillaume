@@ -36,10 +36,13 @@ public class FileService {
                     ImageProperties details = new ImageProperties();
                     details.setId(id);
                     details.setCanalAlpha(newBufferedImage.getColorModel().hasAlpha());
+                    details.setPixelSize(newBufferedImage.getColorModel().getPixelSize());
                     details.setWidth(newBufferedImage.getWidth());
                     details.setHeight(newBufferedImage.getHeight());
+                    details.setPathFileOriginal(".././"+f.getName());
 
                     imagePropertiesRepository.save(details);
+                    log.info("Image send to rabbitMQ:  "+details.toString());
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();

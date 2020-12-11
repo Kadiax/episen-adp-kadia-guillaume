@@ -14,5 +14,7 @@ public class ImageProperties extends Image {
     private boolean canalAlpha;
     private int width;
     private int height;
+    private int pixelSize;
+    private String pathFileOriginal;
 
 }
