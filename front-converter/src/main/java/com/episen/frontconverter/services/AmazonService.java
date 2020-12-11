@@ -15,8 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 
@@ -52,20 +55,42 @@ public class AmazonService {
         s3client.createBucket(bucketName);
     }
 
-    public void getImagesFromBucket(String id){
+    public BufferedImage getImageFromBucketById(String id) {
         //list files
+       /*
         ObjectListing objectListing = s3client.listObjects(bucketName);
         for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
             log.info(os.getKey());
         }
 
-        //Download
-        S3Object s3object = s3client.getObject(bucketName, "1.png");
-        S3ObjectInputStream inputStream = s3object.getObjectContent();
-        try {
-            FileUtils.copyInputStreamToFile(inputStream, new File(".././imgs/1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        */
+        BufferedImage image = null;
+        if (isImageInBucket(id)) {
+
+            try {
+                //Download
+                S3Object s3object = s3client.getObject(bucketName, id + ".png");
+                S3ObjectInputStream inputStream = s3object.getObjectContent();
+
+                //FileUtils.copyInputStreamToFile(inputStream, new File(".././imgs/1.png"));
+                image = ImageIO.read(inputStream);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         }
+
+        return image;
+    }
+
+    public boolean isImageInBucket(String id){
+
+        try {
+            //Download
+            S3Object s3object = s3client.getObject(bucketName, id+".png");
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return false;
     }
 }

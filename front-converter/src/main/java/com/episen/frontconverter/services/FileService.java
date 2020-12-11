@@ -54,8 +54,11 @@ public class FileService {
                 }
             }
         }*/
-
-        this.amazonClient.getImagesFromBucket(id);
+        if(this.amazonClient.isImageInBucket(id)){
+            BufferedImage newBufferedImage = this.amazonClient.getImageFromBucketById(id);
+            log.info("Image AWS pixel size :"+ newBufferedImage.getColorModel().getPixelSize());
+            return true;
+        }
         return false;
     }
 
