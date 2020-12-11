@@ -34,9 +34,9 @@ public class AmazonService {
     //@Value("${amazonProperties.bucketName}")
     private String bucketName="kadiaguillaume-s3";
     //@Value("${amazonProperties.accessKey}")
-    private String accessKey = "AKIAJXWNESBNOQ737X5A";
+    private String accessKey = "";
     //@Value("${amazonProperties.secretKey}")
-    private String secretKey= "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";
+    private String secretKey= "";
 
     private AmazonService() {
         AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
