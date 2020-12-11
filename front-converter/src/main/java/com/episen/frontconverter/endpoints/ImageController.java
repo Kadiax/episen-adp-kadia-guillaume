@@ -25,7 +25,7 @@ public class ImageController {
     public String convert(@RequestBody Image image){
         log.info(image.toString());
         if(fileservice.findById(image.getId())) {
-            rabbitMQSender.send(image);
+            //rabbitMQSender.send(image);
             return "Message sent to the RabbitMQ Successfully";
         }
         return "ID not found. Please try again";

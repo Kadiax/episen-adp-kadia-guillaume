@@ -22,13 +22,18 @@ public class FileService {
     static{
         repertoire = new File(".././imgs/png");
         files=repertoire.listFiles(pngFileFilter);
+
     }
 
-    public FileService(ImagePropertiesRepository imagePropertiesRepository) {
+    private AmazonService amazonClient;
+
+    public FileService(ImagePropertiesRepository imagePropertiesRepository, AmazonService amazonClient) {
         this.imagePropertiesRepository = imagePropertiesRepository;
+        this.amazonClient = amazonClient;
     }
 
     public boolean findById(String id){
+    /*
         for(File f : files){
             if(f.getName().startsWith(id)) {
                 try {
@@ -48,8 +53,9 @@ public class FileService {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
 
+        this.amazonClient.getImagesFromBucket(id);
         return false;
     }
 
