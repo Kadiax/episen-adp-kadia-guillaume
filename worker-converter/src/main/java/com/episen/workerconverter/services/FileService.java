@@ -1,6 +1,5 @@
 package com.episen.workerconverter.services;
 
-import com.episen.workerconverter.model.ImageProperties;
 import com.episen.workerconverter.repository.ImagePropertiesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -24,8 +25,11 @@ public class FileService {
         files=repertoire.listFiles(pngFileFilter);
     }
 
-    public FileService(ImagePropertiesRepository imagePropertiesRepository) {
+    private AmazonService amazonClient;
+
+    public FileService(ImagePropertiesRepository imagePropertiesRepository, AmazonService amazonClient) {
         this.imagePropertiesRepository = imagePropertiesRepository;
+        this.amazonClient = amazonClient;
     }
 
     public BufferedImage findImageById(String id){
@@ -44,6 +48,8 @@ public class FileService {
 
         return newBufferedImage;
     }
+
+
 
 
 }

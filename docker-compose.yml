@@ -3,6 +3,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
+    hostname: rabbitmq
     volumes:
       - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
       - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
@@ -11,5 +12,25 @@ services:
       - 15672:15672
   mongo:
     image: "mongo"
+    hostname: mongo
     ports:
       - "27017:27017"
+  front:
+    build: ./front-converter/
+    hostname: front-converter
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+    links:
+      - "rabbitmq:rabbitmq"
+      - "mongo:mongo"
+  worker:
+      build: ./worker-converter/
+      hostname: worker-converter
+      ports:
+        - "9000:9000"
+      links:
+        - "rabbitmq:rabbitmq"
+        - "mongo:mongo"
+        - "front:front-converter"

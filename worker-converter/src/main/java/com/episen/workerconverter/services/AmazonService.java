@@ -1,4 +1,4 @@
-package com.episen.frontconverter.services;
+package com.episen.workerconverter.services;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -6,28 +6,30 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.WritableResource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.commons.io.FileUtils;
+import java.io.OutputStream;
 
 @Slf4j
 @Service
 public class AmazonService {
 
     private AmazonS3 s3client;
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     //@Value("${amazonProperties.endpointUrl}")
     private static String endpointUrl="https://s3.eu-west-2.amazonaws.com";
@@ -93,4 +95,27 @@ public class AmazonService {
         }
         return false;
     }
+
+    public void putObject(File img, String id){
+        this.s3client.putObject(
+                bucketName,
+                id+".jpg",
+                img
+        );
+    }
+
+    /*public String saveFile (BufferedImage multipartFile) {
+        String objectKey = new StringBuilder ()
+                .append (bucketName)
+                .toString ();
+        WritableResource writableResource = (WritableResource) resourceLoader.getResource (objectKey);
+        try (InputStream inputStream = multipartFile.getInputStream();
+             OutputStream outputStream = writableResource.getOutputStream ()) {
+            IOUtils.copy (inputStream, outputStream);
+        } catch (IOException e) {
+            e.printStackTrace ();
+        }
+        return objectKey;
+    }*/
+
 }
