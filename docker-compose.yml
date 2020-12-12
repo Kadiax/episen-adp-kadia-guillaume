@@ -36,5 +36,5 @@ services:
         - "front:front-converter"
       volumes:
         - vol-worker:/tmp
-  volumes:
+volumes:
     vol-worker:
