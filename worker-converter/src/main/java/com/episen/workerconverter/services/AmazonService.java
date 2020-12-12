@@ -28,17 +28,16 @@ public class AmazonService {
 
     private AmazonS3 s3client;
 
-    @Autowired
-    ResourceLoader resourceLoader;
 
     //@Value("${amazonProperties.endpointUrl}")
     private static String endpointUrl="https://s3.eu-west-2.amazonaws.com";
     //@Value("${amazonProperties.bucketName}")
     private String bucketName="kadiaguillaume-s3";
     //@Value("${amazonProperties.accessKey}")
-    private String accessKey = "AKIAJXWNESBNOQ737X5A";
+    //access key and secretKey deleted because are repository is public
+    private String accessKey = "";
     //@Value("${amazonProperties.secretKey}")
-    private String secretKey= "1abDkxeL3582vdSCV3zBvBMt9guntEC2s5ewzlND";
+    private String secretKey= "";
 
     private AmazonService() {
         AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
@@ -104,18 +103,6 @@ public class AmazonService {
         );
     }
 
-    /*public String saveFile (BufferedImage multipartFile) {
-        String objectKey = new StringBuilder ()
-                .append (bucketName)
-                .toString ();
-        WritableResource writableResource = (WritableResource) resourceLoader.getResource (objectKey);
-        try (InputStream inputStream = multipartFile.getInputStream();
-             OutputStream outputStream = writableResource.getOutputStream ()) {
-            IOUtils.copy (inputStream, outputStream);
-        } catch (IOException e) {
-            e.printStackTrace ();
-        }
-        return objectKey;
-    }*/
+
 
 }
