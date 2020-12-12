@@ -34,3 +34,7 @@ services:
         - "rabbitmq:rabbitmq"
         - "mongo:mongo"
         - "front:front-converter"
+      volumes:
+        - vol-worker:/tmp
+  volumes:
+    vol-worker:

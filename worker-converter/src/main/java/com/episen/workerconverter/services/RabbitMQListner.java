@@ -38,8 +38,6 @@ public class RabbitMQListner implements MessageListener {
     @Autowired
     private ReportingImageRepository reportingImageRepository;
 
-    @Autowired
-    private FileService fileService;
 
     @Autowired
     private AmazonService amazonClient;
@@ -87,9 +85,9 @@ public class RabbitMQListner implements MessageListener {
 
 
                 // save an image
-                Path target = Paths.get(".././imgs/jpg/" + id + ".jpg");
+                Path target = Paths.get("./tmp/jpg/" + id + ".jpg");
                 ImageIO.write(newBufferedImage, "jpg", target.toFile());
-                File imgConverted = new File(".././imgs/jpg/"+id+".jpg");
+                File imgConverted = new File("./tmp/jpg/"+id+".jpg");
 
                 this.amazonClient.putObject(imgConverted , id);
                 log.info("Image : " + imgConverted.getName() + " converted");
