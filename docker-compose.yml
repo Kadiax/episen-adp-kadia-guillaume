@@ -35,6 +35,6 @@ services:
         - "mongo:mongo"
         - "front:front-converter"
       volumes:
-        - vol-worker:/tmp
+        - vol-worker:/tmp/data
 volumes:
     vol-worker:
