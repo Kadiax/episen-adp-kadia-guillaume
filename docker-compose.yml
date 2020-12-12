@@ -16,17 +16,15 @@ services:
     ports:
       - "27017:27017"
   front:
-    build: ./front-converter/
+    image: jeee187/front-converter
     hostname: front-converter
     ports:
       - "8080:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
     links:
       - "rabbitmq:rabbitmq"
       - "mongo:mongo"
   worker:
-      build: ./worker-converter/
+      image: jeee187/worker-converter
       hostname: worker-converter
       ports:
         - "9000:9000"
@@ -35,6 +33,6 @@ services:
         - "mongo:mongo"
         - "front:front-converter"
       volumes:
-        - vol-worker:/tmp/data
+        - vol-worker:/tmp/jpg
 volumes:
     vol-worker:

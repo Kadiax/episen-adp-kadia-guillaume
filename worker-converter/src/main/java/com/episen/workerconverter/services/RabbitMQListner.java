@@ -85,9 +85,9 @@ public class RabbitMQListner implements MessageListener {
 
 
                 // save an image
-                Path target = Paths.get("/tmp/data/" + id + ".jpg");
+                Path target = Paths.get("/tmp/jpg/" + id + ".jpg");
                 ImageIO.write(newBufferedImage, "jpg", target.toFile());
-                File imgConverted = new File("/tmp/data/"+id+".jpg");
+                File imgConverted = new File("/tmp/jpg/"+id+".jpg");
 
                 this.amazonClient.putObject(imgConverted , id);
                 log.info("Image : " + imgConverted.getName() + " converted");
