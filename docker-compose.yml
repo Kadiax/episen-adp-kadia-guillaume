@@ -4,9 +4,6 @@ services:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
     hostname: rabbitmq
-    volumes:
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
     ports:
       - 5672:5672
       - 15672:15672
@@ -23,8 +20,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - rabbitmq
-      - mongo
+      - "rabbitmq"
+      - "mongo"
     links:
       - "rabbitmq:rabbitmq"
       - "mongo:mongo"
@@ -35,8 +32,8 @@ services:
       ports:
         - "9000:9000"
       depends_on:
-        - rabbitmq
-        - mongo
+        - "rabbitmq"
+        - "mongo"
       links:
         - "rabbitmq:rabbitmq"
         - "mongo:mongo"
@@ -50,7 +47,7 @@ services:
       ports: 
         - "8181:8181"
       depends_on:
-        - front
+        - "front"
       links:
         - "front:front-converter"
 volumes:
