@@ -13,31 +13,30 @@ services:
   mongo:
     image: "mongo"
     hostname: mongo
+    container_name: mongo
     ports:
       - "27017:27017"
   front:
     image: jeee187/front-converter
     hostname: front-converter
+    container_name: front-converter
     ports:
       - "8080:8080"
     depends_on:
-      rabbitmq:
-        condition: service_healthy
-      mongo:
-        condition: service_healthy
+      - rabbitmq
+      - mongo
     links:
       - "rabbitmq:rabbitmq"
       - "mongo:mongo"
   worker:
       image: jeee187/worker-converter
       hostname: worker-converter
+      container_name: worker-converter
       ports:
         - "9000:9000"
       depends_on:
-        rabbitmq:
-          condition: service_healthy
-        mongo:
-          condition: service_healthy
+        - rabbitmq
+        - mongo
       links:
         - "rabbitmq:rabbitmq"
         - "mongo:mongo"
@@ -47,11 +46,11 @@ services:
   reverse-proxy:
       build: ./reverse-proxy/
       hostname: reverse-proxy
+      container_name: reverse-proxy
       ports: 
         - "8181:8181"
       depends_on:
-        front:
-          condition: service_healthy
+        - front
       links:
         - "front:front-converter"
 volumes:
