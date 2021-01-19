@@ -20,6 +20,11 @@ services:
     hostname: front-converter
     ports:
       - "8080:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
     links:
       - "rabbitmq:rabbitmq"
       - "mongo:mongo"
@@ -28,6 +33,11 @@ services:
       hostname: worker-converter
       ports:
         - "9000:9000"
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
+        mongo:
+          condition: service_healthy
       links:
         - "rabbitmq:rabbitmq"
         - "mongo:mongo"
@@ -39,6 +49,9 @@ services:
       hostname: reverse-proxy
       ports: 
         - "8181:8181"
+      depends_on:
+        front:
+          condition: service_healthy
       links:
         - "front:front-converter"
 volumes:
