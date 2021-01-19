@@ -109,7 +109,7 @@ public class RabbitMQListner implements MessageListener {
                 try{
                     //send notification
                     restTemplate.postForEntity(
-                            "http://localhost:8080/notifications",
+                            "http://front-converter:8080/notifications",
                             new Notification("Image "+imgConverted.getName()+" converted"),
                             Notification.class);
 
