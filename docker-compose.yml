@@ -34,5 +34,12 @@ services:
         - "front:front-converter"
       volumes:
         - vol-worker:/tmp/jpg
+  reverse-proxy:
+      build: ./reverse-proxy/
+      hostname: reverse-proxy
+      ports: 
+        - "8181:8181"
+      links:
+        - "front:front-converter"
 volumes:
     vol-worker:
