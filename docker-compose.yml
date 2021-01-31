@@ -13,10 +13,10 @@ services:
     container_name: mongo
     ports:
       - "27017:27017"
-  front:
+  back4front:
     image: jeee187/front-converter
-    hostname: front-converter
-    container_name: front-converter
+    hostname: back4front
+    container_name: back4front
     ports:
       - "8080:8080"
     depends_on:
@@ -25,6 +25,7 @@ services:
     links:
       - "rabbitmq:rabbitmq"
       - "mongo:mongo"
+      - "conversion-transaction-manager:conversion-transaction-manager"
   worker:
       image: jeee187/worker-converter
       hostname: worker-converter
@@ -37,9 +38,22 @@ services:
       links:
         - "rabbitmq:rabbitmq"
         - "mongo:mongo"
-        - "front:front-converter"
       volumes:
         - vol-worker:/tmp/jpg
+  conversion-transaction-manager:
+    image: jeee187/worker-converter
+    hostname: conversion-transaction-manager
+    container_name: conversion-transaction-manager
+    ports:
+      - "9001:9001"
+    depends_on:
+      - "rabbitmq"
+      - "mongo"
+    links:
+      - "rabbitmq:rabbitmq"
+      - "mongo:mongo"
+    volumes:
+      - vol-worker:/tmp/jpg
   reverse-proxy:
       build: ./reverse-proxy/
       hostname: reverse-proxy
